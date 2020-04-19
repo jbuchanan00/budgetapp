@@ -1,13 +1,13 @@
 import os
 import psycopg2
 import sys
-from private import *
+from private import dbcredentials
 
 
 
 
 
-conn = psycopg2.connect(db-credentials)
+conn = psycopg2.connect(dbcredentials)
 
 conn.set_session(autocommit=True)
 
