@@ -2,27 +2,37 @@ import os
 import psycopg2
 import sys
 from private import dbcredentials
-
-
-
+from tkinter import *
+from login import *
 
 
 conn = psycopg2.connect(dbcredentials)
+tk = Tk()
+loginScreen = Toplevel()
+loginScreen.title("login")
 
 conn.set_session(autocommit=True)
 
-cursor = conn.cursor()
-input_id = 1
 
-query = f'''select * from user_info where id = {input_id}'''
 
-cursor.execute(query)
+user_info = []
 
-user_info = cursor.fetchall()
-user_first_name = user_info[0][1].strip()
-user_last_name = user_info[0][2].strip()
-welcome = "Welcome, " + user_first_name + " " + user_last_name
+def login_submit(id):
+    cursor = conn.cursor()
+    query = f'''select * from user_info where id = {id}'''
+    cursor.execute(query)
+    print(cursor.fetchall())
+    cursor.close()
+    loginScreen.withdraw()
 
-cursor.close()
+loginButton = Button(loginScreen, text="hope", command=lambda:login_submit(1))
+loginEntry = Entry(loginScreen, width=60)
 
+loginButton.grid(row=1, column=0)
+loginEntry.grid(row=0, column=0)
+
+loginScreen.mainloop()
+tk.mainloop()
 conn.close()
+
+
