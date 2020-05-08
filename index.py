@@ -19,7 +19,7 @@ conn.set_session(autocommit=True)
 userFirstName = ""
 userLastName = ""
 id = 0
-inSourceFreq = 0
+inSourceFreq = IntVar()
 
 
 
@@ -40,13 +40,13 @@ def login_submit():
     loginScreen.withdraw()
     userFirstName = user_info[0][1].strip()
     userLastName = user_info[0][2].strip()
-    print(userFirstName, userLastName)
     userFirstNameLabel = Label(tk, text=userFirstName)
     userLastNameLabel = Label(tk, text=userLastName)
     userFirstNameLabel.grid(row=0, column=0)
     userLastNameLabel.grid(row=0, column=1)
 
-
+def submitInClick():
+    print(id, incomeSource.get(), inSourceFreq.get())
 
 
 
@@ -63,7 +63,7 @@ incomeSourceFreqLabel = Label(tk, text="Frequency of Income")
 
 #Buttons
 loginButton = Button(loginScreen, text="Login", command=lambda:login_submit())
-
+submitIn = Button(tk, text="Submit", command=submitInClick)
 
 
 #Inputs
@@ -87,6 +87,7 @@ incomeSourceLabel.grid(row=1, column=0)
 
 #Buttons
 loginButton.grid(row=2, column=0)
+submitIn.grid(row=4, column=1)
 
 #Inputs
 loginEntry.grid(row=1, column=0)
@@ -98,7 +99,6 @@ incomeSourceBiWeek.grid(row=3, column=2)
 incomeSourceMonth.grid(row=3, column=3)
 incomeSourceSemiAnn.grid(row=3, column=4)
 incomeSourceYear.grid(row=3, column=5)
-
 
 loginScreen.mainloop()
 tk.mainloop()
