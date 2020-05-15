@@ -46,7 +46,15 @@ def login_submit():
     userLastNameLabel.grid(row=0, column=1)
 
 def submitInClick():
-    print(id, incomeSource.get(), inSourceFreq.get())
+    cursor = conn.cursor()
+    inSource = incomeSource.get()
+    sourceFreq = inSourceFreq.get()
+    query = 'insert into income (source, isfrequent, user_id) values (%s, %s, %s)'
+    print(query)
+    cursor.execute(query, (inSource, sourceFreq, id))
+    #info = cursor.fetchall()
+    #print(info)
+    cursor.close()
 
 
 
@@ -83,22 +91,22 @@ incomeSourceYear = Radiobutton(tk, text="Yearly", variable=inSourceFreq, value=5
 loginLabel.grid(row=0, column=0)
 userFirstNameLabel.grid(row=0, column=0)
 userLastNameLabel.grid(row=0, column=1)
-incomeSourceLabel.grid(row=1, column=0)
+incomeSourceLabel.grid(row=1, column=1, columnspan=2)
 
 #Buttons
 loginButton.grid(row=2, column=0)
-submitIn.grid(row=4, column=1)
+submitIn.grid(row=4, column=2)
 
 #Inputs
 loginEntry.grid(row=1, column=0)
-incomeSource.grid(row=2, column=0)
+incomeSource.grid(row=2, column=1, columnspan=2)
 
 #RadioButtons
-incomeSourceOneTime.grid(row=3, column=1)
-incomeSourceBiWeek.grid(row=3, column=2)
-incomeSourceMonth.grid(row=3, column=3)
-incomeSourceSemiAnn.grid(row=3, column=4)
-incomeSourceYear.grid(row=3, column=5)
+incomeSourceOneTime.grid(row=3, column=0)
+incomeSourceBiWeek.grid(row=3, column=1)
+incomeSourceMonth.grid(row=3, column=2)
+incomeSourceSemiAnn.grid(row=3, column=3)
+incomeSourceYear.grid(row=3, column=4)
 
 loginScreen.mainloop()
 tk.mainloop()
