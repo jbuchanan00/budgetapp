@@ -52,10 +52,28 @@ def submitInClick():
     query = 'insert into income (source, isfrequent, user_id) values (%s, %s, %s)'
     print(query)
     cursor.execute(query, (inSource, sourceFreq, id))
-    #info = cursor.fetchall()
-    #print(info)
     cursor.close()
 
+
+def getInfoClick():
+    global id
+    cursor = conn.cursor()
+    query = f'select * from income where user_id = {id}'
+    cursor.execute(query)
+    info = cursor.fetchall()
+    j = 6
+    for i in info:
+        
+        if i[2] == 2:
+            frequency = "Bi-Weekly"
+        elif i[2] == 3:
+            frequency = "Monthly"
+        infoLabel = Label(tk, text=i[1].strip())
+        frequencyLabel = Label(tk, text=frequency)
+        infoLabel.grid(row=j, column=0)
+        frequencyLabel.grid(row=j, column=1)
+        j = j + 1
+        
 
 
 
@@ -72,6 +90,7 @@ incomeSourceFreqLabel = Label(tk, text="Frequency of Income")
 #Buttons
 loginButton = Button(loginScreen, text="Login", command=lambda:login_submit())
 submitIn = Button(tk, text="Submit", command=submitInClick)
+incomeInfo = Button(tk, text="Income info", command=getInfoClick)
 
 
 #Inputs
@@ -96,6 +115,7 @@ incomeSourceLabel.grid(row=1, column=1, columnspan=2)
 #Buttons
 loginButton.grid(row=2, column=0)
 submitIn.grid(row=4, column=2)
+incomeInfo.grid(row=5, column=0)
 
 #Inputs
 loginEntry.grid(row=1, column=0)
