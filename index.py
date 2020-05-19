@@ -34,7 +34,6 @@ def login_submit():
     query = f'''select * from user_info where id = {id}'''
     cursor.execute(query)
     user_info = cursor.fetchall()
-    print(user_info[0])
     cursor.close()
     #kills login screen without killing the main program
     loginScreen.withdraw()
@@ -58,11 +57,13 @@ def submitInClick():
 def getInfoClick():
     global id
     global incomeRow
+    global infoButton
     cursor = conn.cursor()
     query = f'select * from income where user_id = {id}'
     cursor.execute(query)
     info = cursor.fetchall()
     incomeRow = 6
+    j=0
     for i in info:
         if i[2] == 2:
             frequency = "Bi-Weekly"
@@ -75,13 +76,14 @@ def getInfoClick():
         infoButton.grid(row=incomeRow, column=0)
         frequencyLabel.grid(row=incomeRow, column=1)
         incomeRow = incomeRow + 1
+        j += 1
     
 def infoButtonClick(event):
-    print(event.widget)
+    button = (event.widget)
+    print(button.cget("text"))
 
 def incomeItem(src):
     global incomeRow
-    print(src)
     incomeItem = Entry(tk, width=30)
     incomeItemDate = Entry(tk, width=30)
     incomeItem.grid(row=incomeRow, column=2, columnspan=2)
