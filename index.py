@@ -4,6 +4,7 @@ import sys
 from private import dbcredentials
 from tkinter import *
 from login import *
+from datetime import date
 
 
 conn = psycopg2.connect(dbcredentials)
@@ -70,25 +71,49 @@ def getInfoClick():
         elif i[2] == 3:
             frequency = "Monthly"
         source = i[1].strip()
-        infoButton = Button(tk, text=i[1].strip(), command=lambda: incomeItem(i))
+        infoButton = Button(tk, text=i[1].strip())
         frequencyLabel = Label(tk, text=frequency)
         infoButton.bind("<Button-1>", infoButtonClick)
         infoButton.grid(row=incomeRow, column=0)
         frequencyLabel.grid(row=incomeRow, column=1)
         incomeRow = incomeRow + 1
         j += 1
+    cursor.close()
     
 def infoButtonClick(event):
+    global incomeAmount
+    global incomeDate
+    global incomeItemPop
     button = (event.widget)
-    print(button.cget("text"))
+    incomeName = button.cget("text")
+    incomeItemPop = Toplevel()
+    incomeItemPop.title("Income Entry")
+    #Widgets
+    incomeAmount = Entry(incomeItemPop, width=30)
+    incomeDate = Entry(incomeItemPop, width=30)
+    incomeItemSubmit = Button(incomeItemPop, text="Submit", padx=5, pady=5, command=lambda: iIButtonClick(incomeName))
+    #Inserts
+    incomeDate.insert(0, date.today())
+    #Placements
+    incomeAmount.grid(row=0, column=0)
+    incomeDate.grid(row=0, column=1)
+    incomeItemSubmit.grid(row=1, column=1, sticky=E)
 
-def incomeItem(src):
-    global incomeRow
-    incomeItem = Entry(tk, width=30)
-    incomeItemDate = Entry(tk, width=30)
-    incomeItem.grid(row=incomeRow, column=2, columnspan=2)
-    incomeItemDate.grid(row=incomeRow, column=4, columnspan=2)
+    incomeItemPop.mainloop()
 
+def iIButtonClick(src):
+    global incomeAmount
+    global incomeDate
+    global incomeItemPop
+    iIAmount = incomeAmount.get()
+    iIDate = incomeDate.get()
+    incomeItemPop.withdraw()
+    cursor = conn.cursor()
+    query = "select income_id from Income where source = %s"
+    cursor.execute(query, [src])
+    incomeId = cursor.fetchall()[0][0]
+    print(iIAmount, iIDate, src, incomeId)
+    #IncomeID, Amount, Date
 
 
 def incomeScreenClick():
