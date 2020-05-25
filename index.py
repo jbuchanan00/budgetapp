@@ -126,6 +126,13 @@ def iIButtonClick(src):
 
 
 def incomeScreenClick():
+    global tk
+    for widget in tk.winfo_children():
+        widget.destroy()
+    incomeScreenButton = Button(tk, text="Income", command=incomeScreenClick)
+    expenseScreenButton = Button(tk, text="Expense", command=expenseScreenClick)
+    incomeScreenButton.grid(row=0, column=3)
+    expenseScreenButton.grid(row=0, column=4)
     #Income screen Labels
     userFirstNameLabel = Label(tk, text=userFirstName)
     userLastNameLabel = Label(tk, text=userLastName)
@@ -158,6 +165,68 @@ def incomeScreenClick():
     incomeSourceSemiAnn.grid(row=3, column=3)
     incomeSourceYear.grid(row=3, column=4) 
 
+def expenseScreenClick():
+    global tk
+    global userFirstName
+    global userLastName
+    global categoryEntry
+    for widget in tk.winfo_children():
+        widget.destroy()
+    #Widget
+    #Label
+    userFirstNameLabel = Label(tk, text=userFirstName)
+    userLastNameLabel = Label(tk, text=userLastName)
+    expenseLabel = Label(tk, text="Expenses")
+    #Button
+    incomeScreenButton = Button(tk, text="Income", command=incomeScreenClick)
+    expenseScreenButton = Button(tk, text="Expense", command=expenseScreenClick)
+    expenseSrcButton = Button(tk, text="Submit")
+    categoryEntryButton = Button(tk, text="Submit", command=categoryEntryClick)
+    #Entry
+    categoryEntry = Entry(tk, width=30)
+    categoryEntry.insert(0, "Category")
+    expenseSrc = Entry(tk, width=30)
+    expenseSrc.insert(0, "Source")
+    #Radio Button
+    expenseSourceOneTime = Radiobutton(tk, text="One Time", variable=inSourceFreq, value=1)
+    expenseSourceBiWeek = Radiobutton(tk, text="Bi-Weekly", variable=inSourceFreq, value=2)
+    expenseSourceMonth = Radiobutton(tk, text="Monthly", variable=inSourceFreq, value=3)
+    expenseSourceSemiAnn = Radiobutton(tk, text="Semi-Annually", variable=inSourceFreq, value=4)
+    expenseSourceYear = Radiobutton(tk, text="Yearly", variable=inSourceFreq, value=5)
+    
+    #Layout
+    #Label
+    userFirstNameLabel.grid(row=0, column=0)
+    userLastNameLabel.grid(row=0, column=1)
+    expenseLabel.grid(row=1, column=1)
+    #Button
+    incomeScreenButton.grid(row=0, column=3)
+    expenseScreenButton.grid(row=0, column=4)
+    expenseSrcButton.grid(row=3, column=1)
+    categoryEntryButton.grid(row=6, column=1)
+    #Entry
+    categoryEntry.grid(row=5, column=0, columnspan=3)
+    expenseSrc.grid(row=2, column=0, columnspan=3)
+    #Radio Button
+    expenseSourceOneTime.grid(row=4, column=0)
+    expenseSourceBiWeek.grid(row=4, column=1)
+    expenseSourceMonth.grid(row=4, column=2)
+    expenseSourceSemiAnn.grid(row=4, column=3)
+    expenseSourceYear.grid(row=4, column=4)
+
+
+def categoryEntryClick():
+    global categoryEntry
+    cursor = conn.cursor()
+    catEnt = categoryEntry.get()
+    query = "insert into category cat_name values %s"
+    try:
+        cursor.execute(query, [catEnt])
+        print("success")
+    except psycopg2.Error as e:
+        print(e)
+    cursor.close()
+
 #Login/MainPage
 #Labels
 loginLabel = Label(loginScreen, text="Login")
@@ -165,6 +234,7 @@ loginLabel = Label(loginScreen, text="Login")
 #Buttons
 loginButton = Button(loginScreen, text="Login", command=lambda:login_submit())
 incomeScreenButton = Button(tk, text="Income", command=incomeScreenClick)
+expenseScreenButton = Button(tk, text="Expense", command=expenseScreenClick)
 
 
 #Inputs
@@ -177,6 +247,7 @@ loginLabel.grid(row=0, column=0)
 #Buttons
 loginButton.grid(row=2, column=0)
 incomeScreenButton.grid(row=0, column=3)
+expenseScreenButton.grid(row=0, column=4)
 
 #Inputs
 loginEntry.grid(row=1, column=0)
