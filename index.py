@@ -219,12 +219,12 @@ def categoryEntryClick():
     global categoryEntry
     cursor = conn.cursor()
     catEnt = categoryEntry.get()
-    query = "insert into category cat_name values %s"
+    query = "insert into category (cat_name) values (%s)"
     try:
         cursor.execute(query, [catEnt])
-        print("success")
+        messagebox.showinfo("Success", "Success")
     except psycopg2.Error as e:
-        print(e)
+        messagebox.showinfo("Error", e)
     cursor.close()
 
 #Login/MainPage
