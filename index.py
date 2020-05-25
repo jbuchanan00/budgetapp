@@ -5,6 +5,7 @@ from private import dbcredentials
 from tkinter import *
 from login import *
 from datetime import date
+from tkinter import messagebox
 
 
 conn = psycopg2.connect(dbcredentials)
@@ -113,6 +114,14 @@ def iIButtonClick(src):
     cursor.execute(query, [src])
     incomeId = cursor.fetchall()[0][0]
     print(iIAmount, iIDate, src, incomeId)
+    lineQuery = "insert into income_line (income_id, amount, date_made) values (%s, %s, %s)"
+    try:
+        cursor.execute(lineQuery, [incomeId, iIAmount, iIDate])
+        messagebox.showinfo("Success", "Success")
+    except psycopg2.Error as e:
+        messagebox.showinfo("Error", e)
+    cursor.close()
+    
     #IncomeID, Amount, Date
 
 
