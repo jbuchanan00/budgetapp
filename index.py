@@ -170,6 +170,7 @@ def expenseScreenClick():
     global userFirstName
     global userLastName
     global categoryEntry
+    global expenseSrc
     for widget in tk.winfo_children():
         widget.destroy()
     #Widget
@@ -180,7 +181,7 @@ def expenseScreenClick():
     #Button
     incomeScreenButton = Button(tk, text="Income", command=incomeScreenClick)
     expenseScreenButton = Button(tk, text="Expense", command=expenseScreenClick)
-    expenseSrcButton = Button(tk, text="Submit")
+    expenseSrcButton = Button(tk, text="Submit", command=expenseEntryClick)
     categoryEntryButton = Button(tk, text="Submit", command=categoryEntryClick)
     #Entry
     categoryEntry = Entry(tk, width=30)
@@ -193,6 +194,17 @@ def expenseScreenClick():
     expenseSourceMonth = Radiobutton(tk, text="Monthly", variable=inSourceFreq, value=3)
     expenseSourceSemiAnn = Radiobutton(tk, text="Semi-Annually", variable=inSourceFreq, value=4)
     expenseSourceYear = Radiobutton(tk, text="Yearly", variable=inSourceFreq, value=5)
+    #Drop Menu
+    clicked = StringVar()
+    cursor = conn.cursor()
+    cursor.execute("select * from category")
+    fullCatList = cursor.fetchall()
+    categoryList = []
+    for i in fullCatList:
+        categoryList.append(i[1])
+    print(categoryList)
+    catDrop = OptionMenu(tk, clicked, *categoryList)
+    conn.close()
     
     #Layout
     #Label
@@ -213,6 +225,8 @@ def expenseScreenClick():
     expenseSourceMonth.grid(row=4, column=2)
     expenseSourceSemiAnn.grid(row=4, column=3)
     expenseSourceYear.grid(row=4, column=4)
+    #Drop Menu
+    catDrop.grid(row=2, column=3)
 
 
 def categoryEntryClick():
@@ -227,6 +241,12 @@ def categoryEntryClick():
         messagebox.showinfo("Error", e)
     cursor.close()
 
+def expenseEntryClick():
+    global expenseSrc
+    #cursor = conn.cursor()
+    expEnt = expenseSrc.get()
+    #UserId, Source, Freq, Category
+    print(expEnt)
 #Login/MainPage
 #Labels
 loginLabel = Label(loginScreen, text="Login")
