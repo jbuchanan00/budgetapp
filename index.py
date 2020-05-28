@@ -171,6 +171,7 @@ def expenseScreenClick():
     global userLastName
     global categoryEntry
     global expenseSrc
+    global clicked
     for widget in tk.winfo_children():
         widget.destroy()
     #Widget
@@ -243,10 +244,12 @@ def categoryEntryClick():
 
 def expenseEntryClick():
     global expenseSrc
+    global clicked
     #cursor = conn.cursor()
     expEnt = expenseSrc.get()
+    catEnt = clicked.get()
     #UserId, Source, Freq, Category
-    print(expEnt)
+    print(expEnt, catEnt)
 #Login/MainPage
 #Labels
 loginLabel = Label(loginScreen, text="Login")
