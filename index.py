@@ -47,6 +47,7 @@ def login_submit():
     userLastNameLabel.grid(row=0, column=1)
 
 def submitInClick():
+    global incomeSource
     cursor = conn.cursor()
     inSource = incomeSource.get()
     sourceFreq = inSourceFreq.get()
@@ -127,6 +128,7 @@ def iIButtonClick(src):
 
 def incomeScreenClick():
     global tk
+    global incomeSource
     for widget in tk.winfo_children():
         widget.destroy()
     incomeScreenButton = Button(tk, text="Income", command=incomeScreenClick)
@@ -202,7 +204,7 @@ def expenseScreenClick():
     fullCatList = cursor.fetchall()
     categoryList = []
     for i in fullCatList:
-        categoryList.append(i[1])
+        categoryList.append(i[1].strip())
     print(categoryList)
     catDrop = OptionMenu(tk, clicked, *categoryList)
     conn.close()
