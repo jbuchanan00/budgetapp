@@ -174,6 +174,8 @@ def expenseScreenClick():
     global categoryEntry
     global expenseSrc
     global clicked
+    global catIdFind
+    global exSourceFreq
     for widget in tk.winfo_children():
         widget.destroy()
     #Widget
@@ -192,20 +194,22 @@ def expenseScreenClick():
     expenseSrc = Entry(tk, width=30)
     expenseSrc.insert(0, "Source")
     #Radio Button
-    expenseSourceOneTime = Radiobutton(tk, text="One Time", variable=inSourceFreq, value=1)
-    expenseSourceBiWeek = Radiobutton(tk, text="Bi-Weekly", variable=inSourceFreq, value=2)
-    expenseSourceMonth = Radiobutton(tk, text="Monthly", variable=inSourceFreq, value=3)
-    expenseSourceSemiAnn = Radiobutton(tk, text="Semi-Annually", variable=inSourceFreq, value=4)
-    expenseSourceYear = Radiobutton(tk, text="Yearly", variable=inSourceFreq, value=5)
+    exSourceFreq = IntVar()
+    expenseSourceOneTime = Radiobutton(tk, text="One Time", variable=exSourceFreq, value=1)
+    expenseSourceBiWeek = Radiobutton(tk, text="Bi-Weekly", variable=exSourceFreq, value=2)
+    expenseSourceMonth = Radiobutton(tk, text="Monthly", variable=exSourceFreq, value=3)
+    expenseSourceSemiAnn = Radiobutton(tk, text="Semi-Annually", variable=exSourceFreq, value=4)
+    expenseSourceYear = Radiobutton(tk, text="Yearly", variable=exSourceFreq, value=5)
     #Drop Menu
     clicked = StringVar()
     cursor = conn.cursor()
     cursor.execute("select * from category")
     fullCatList = cursor.fetchall()
     categoryList = []
+    catIdFind = []
     for i in fullCatList:
         categoryList.append(i[1].strip())
-    print(categoryList)
+        catIdFind.append(i)
     catDrop = OptionMenu(tk, clicked, *categoryList)
     conn.close()
     
@@ -247,11 +251,19 @@ def categoryEntryClick():
 def expenseEntryClick():
     global expenseSrc
     global clicked
+    global catIdFind
+    global exSourceFreq
     #cursor = conn.cursor()
     expEnt = expenseSrc.get()
     catEnt = clicked.get()
+    freq = exSourceFreq.get()
+    catId = 0
+    for i in catIdFind:
+        print(i[1], catEnt)
+        if i[1].strip() == catEnt:
+            catId = i[0]
     #UserId, Source, Freq, Category
-    print(expEnt, catEnt)
+    print(expEnt, catEnt, catId, freq)
 #Login/MainPage
 #Labels
 loginLabel = Label(loginScreen, text="Login")
