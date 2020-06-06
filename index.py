@@ -56,7 +56,6 @@ def submitInClick():
     cursor.execute(query, (inSource, sourceFreq, id))
     cursor.close()
 
-
 def getInfoClick():
     global id
     global incomeRow
@@ -68,10 +67,18 @@ def getInfoClick():
     incomeRow = 6
     j=0
     for i in info:
-        if i[2] == 2:
+        if i[2] == 1:
+            frequency = "One Time"
+        elif i[2] == 2:
             frequency = "Bi-Weekly"
         elif i[2] == 3:
             frequency = "Monthly"
+        elif i[2] == 4:
+            frequency = "Semi-Annually"
+        elif i[2] == 5:
+            frequency = "Annually"
+        else:
+            frequency = "Not specified"
         source = i[1].strip()
         infoButton = Button(tk, text=i[1].strip())
         frequencyLabel = Label(tk, text=frequency)
@@ -124,7 +131,6 @@ def iIButtonClick(src):
     cursor.close()
     
     #IncomeID, Amount, Date
-
 
 def incomeScreenClick():
     global tk
@@ -188,6 +194,7 @@ def expenseScreenClick():
     expenseScreenButton = Button(tk, text="Expense", command=expenseScreenClick)
     expenseSrcButton = Button(tk, text="Submit", command=expenseEntryClick)
     categoryEntryButton = Button(tk, text="Submit", command=categoryEntryClick)
+    expenseInfoButton = Button(tk, text="Expense info", command=expenseInfoClick)
     #Entry
     categoryEntry = Entry(tk, width=30)
     categoryEntry.insert(0, "Category")
@@ -196,10 +203,11 @@ def expenseScreenClick():
     #Radio Button
     exSourceFreq = IntVar()
     expenseSourceOneTime = Radiobutton(tk, text="One Time", variable=exSourceFreq, value=1)
-    expenseSourceBiWeek = Radiobutton(tk, text="Bi-Weekly", variable=exSourceFreq, value=2)
-    expenseSourceMonth = Radiobutton(tk, text="Monthly", variable=exSourceFreq, value=3)
-    expenseSourceSemiAnn = Radiobutton(tk, text="Semi-Annually", variable=exSourceFreq, value=4)
-    expenseSourceYear = Radiobutton(tk, text="Yearly", variable=exSourceFreq, value=5)
+    expenseSourceWeekly = Radiobutton(tk, text="Weekly", variable = exSourceFreq, value=2)
+    expenseSourceBiWeek = Radiobutton(tk, text="Bi-Weekly", variable=exSourceFreq, value=3)
+    expenseSourceMonth = Radiobutton(tk, text="Monthly", variable=exSourceFreq, value=4)
+    expenseSourceSemiAnn = Radiobutton(tk, text="Semi-Annually", variable=exSourceFreq, value=5)
+    expenseSourceYear = Radiobutton(tk, text="Yearly", variable=exSourceFreq, value=6)
     #Drop Menu
     clicked = StringVar()
     cursor = conn.cursor()
@@ -211,7 +219,6 @@ def expenseScreenClick():
         categoryList.append(i[1].strip())
         catIdFind.append(i)
     catDrop = OptionMenu(tk, clicked, *categoryList)
-    conn.close()
     
     #Layout
     #Label
@@ -223,18 +230,19 @@ def expenseScreenClick():
     expenseScreenButton.grid(row=0, column=4)
     expenseSrcButton.grid(row=3, column=1)
     categoryEntryButton.grid(row=6, column=1)
+    expenseInfoButton.grid(row=7, column=0)
     #Entry
     categoryEntry.grid(row=5, column=0, columnspan=3)
     expenseSrc.grid(row=2, column=0, columnspan=3)
     #Radio Button
     expenseSourceOneTime.grid(row=4, column=0)
-    expenseSourceBiWeek.grid(row=4, column=1)
-    expenseSourceMonth.grid(row=4, column=2)
-    expenseSourceSemiAnn.grid(row=4, column=3)
-    expenseSourceYear.grid(row=4, column=4)
+    expenseSourceWeekly.grid(row=4, column=1)
+    expenseSourceBiWeek.grid(row=4, column=2)
+    expenseSourceMonth.grid(row=4, column=3)
+    expenseSourceSemiAnn.grid(row=4, column=4)
+    expenseSourceYear.grid(row=4, column=5)
     #Drop Menu
     catDrop.grid(row=2, column=3)
-
 
 def categoryEntryClick():
     global categoryEntry
@@ -246,24 +254,36 @@ def categoryEntryClick():
         messagebox.showinfo("Success", "Success")
     except psycopg2.Error as e:
         messagebox.showinfo("Error", e)
-    cursor.close()
 
 def expenseEntryClick():
     global expenseSrc
     global clicked
     global catIdFind
     global exSourceFreq
-    #cursor = conn.cursor()
+    global id
     expEnt = expenseSrc.get()
     catEnt = clicked.get()
     freq = exSourceFreq.get()
+    cursor = conn.cursor()
     catId = 0
     for i in catIdFind:
         print(i[1], catEnt)
         if i[1].strip() == catEnt:
             catId = i[0]
     #UserId, Source, Freq, Category
-    print(expEnt, catEnt, catId, freq)
+    query = "insert into Expense (user_id, expense_source, frequency, category_id) values (%s, %s, %s, %s)"
+    try:
+        cursor.execute(query, [id, expEnt, freq, catId])
+        messagebox.showinfo("Success", "Success")
+    except psycopg2.Error as e:
+        messagebox.showinfo("Error", e)
+
+def expenseInfoClick():
+    global id
+    cursor = conn.cursor()
+    query = f"select * from Expense where user_id = {id}"
+    cursor.execute(query)
+    print(cursor.fetchall())     
 #Login/MainPage
 #Labels
 loginLabel = Label(loginScreen, text="Login")
