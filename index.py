@@ -283,7 +283,12 @@ def expenseInfoClick():
     cursor = conn.cursor()
     query = f"select * from Expense where user_id = {id}"
     cursor.execute(query)
-    print(cursor.fetchall())     
+    info = cursor.fetchall()
+    expRow = 8
+    for i in info:
+        expInfoButton = Button(tk, text=i[2].strip())
+        expInfoButton.grid(row=expRow, column=0)
+        expRow += 1    
 #Login/MainPage
 #Labels
 loginLabel = Label(loginScreen, text="Login")
