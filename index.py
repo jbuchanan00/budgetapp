@@ -189,6 +189,7 @@ def expenseScreenClick():
     userFirstNameLabel = Label(tk, text=userFirstName)
     userLastNameLabel = Label(tk, text=userLastName)
     expenseLabel = Label(tk, text="Expenses")
+    expCatLabel = Label(tk, text="Category")
     #Button
     incomeScreenButton = Button(tk, text="Income", command=incomeScreenClick)
     expenseScreenButton = Button(tk, text="Expense", command=expenseScreenClick)
@@ -225,6 +226,7 @@ def expenseScreenClick():
     userFirstNameLabel.grid(row=0, column=0)
     userLastNameLabel.grid(row=0, column=1)
     expenseLabel.grid(row=1, column=1)
+    expCatLabel.grid(row=7, column=1)
     #Button
     incomeScreenButton.grid(row=0, column=3)
     expenseScreenButton.grid(row=0, column=4)
@@ -281,13 +283,16 @@ def expenseEntryClick():
 def expenseInfoClick():
     global id
     cursor = conn.cursor()
-    query = f"select * from Expense where user_id = {id}"
+    query = f"select * from Expense left join Category on Category.category_id = Expense.category_id where user_id = {id}"
     cursor.execute(query)
     info = cursor.fetchall()
     expRow = 8
     for i in info:
+        print(i)
         expInfoButton = Button(tk, text=i[2].strip())
         expInfoButton.grid(row=expRow, column=0)
+        expCatInfo = Label(tk, text=i[6].strip())
+        expCatInfo.grid(row=expRow, column=1)
         expRow += 1    
 #Login/MainPage
 #Labels
