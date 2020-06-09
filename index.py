@@ -289,11 +289,45 @@ def expenseInfoClick():
     expRow = 8
     for i in info:
         print(i)
-        expInfoButton = Button(tk, text=i[2].strip())
+        expInfoButton = Button(tk, text=i[2].strip(), command=expLineClick)
         expInfoButton.grid(row=expRow, column=0)
         expCatInfo = Label(tk, text=i[6].strip())
         expCatInfo.grid(row=expRow, column=1)
-        expRow += 1    
+        expInfoButton.bind("<Button-1>", expLineClick)
+        expRow += 1  
+
+def expLineClick(event):
+    global expAmount
+    global expDate
+    global expItemPop
+    button = (event.widget)
+    expenseName = button.cget("text")
+    expItemPop = Toplevel()
+    expItemPop.title("Income Entry")
+    #Widgets
+    expAmount = Entry(expItemPop, width=30)
+    expDate = Entry(expItemPop, width=30)
+    expItemSubmit = Button(expItemPop, text="Submit", padx=5, pady=5, command=lambda: eIButtonClick(expenseName))
+    #Inserts
+    expDate.insert(0, date.today())
+    #Placements
+    expAmount.grid(row=0, column=0)
+    expDate.grid(row=0, column=1)
+    expItemSubmit.grid(row=1, column=1, sticky=E)
+
+    expItemPop.mainloop()
+
+def eIButtonClick(src):
+    global expAmount
+    global expDate
+    global expItemPop
+    eIAmount = expAmount.get()
+    eIDate = expDate.get()
+    expItemPop.withdraw()
+    print(eIAmount, eIDate)
+    
+
+    
 #Login/MainPage
 #Labels
 loginLabel = Label(loginScreen, text="Login")
