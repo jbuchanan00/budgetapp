@@ -51,9 +51,22 @@ def submitInClick():
     cursor = conn.cursor()
     inSource = incomeSource.get()
     sourceFreq = inSourceFreq.get()
+    query = f"select source from income where user_id = {id}"
+    cursor.execute(query)
+    inSourceCheck = cursor.fetchall()
+    for i in inSourceCheck:
+        print(i[0].strip())
+        if(i[0].strip() == inSource):
+            messagebox.showinfo("Error", "Income source has already been submitted")
+            return
+        else:
+            continue
     query = 'insert into income (source, isfrequent, user_id) values (%s, %s, %s)'
-    print(query)
-    cursor.execute(query, (inSource, sourceFreq, id))
+    try:
+        cursor.execute(query, (inSource, sourceFreq, id))
+        messagebox.showinfo("Success", "Success")
+    except psycopg2.Error as e:
+        messagebox.showinfo("Error", e)
     cursor.close()
 
 def getInfoClick():
