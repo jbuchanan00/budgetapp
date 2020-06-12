@@ -248,8 +248,20 @@ def expenseScreenClick():
 
 def categoryEntryClick():
     global categoryEntry
+    global id
     cursor = conn.cursor()
     catEnt = categoryEntry.get()
+    query = f"select cat_name from category where user_id = {id}"
+    cursor.execute(query)
+    catCheck = cursor.fetchall()
+    print(catCheck)
+    for i in catCheck:
+        print(i[0].strip(), catEnt)
+        if(i[0].strip() == catEnt):
+            messagebox.showinfo("Error", "Category has already been submitted")
+            return
+        else:
+            continue
     query = "insert into category (cat_name) values (%s)"
     try:
         cursor.execute(query, [catEnt])
@@ -324,7 +336,18 @@ def eIButtonClick(src):
     eIAmount = expAmount.get()
     eIDate = expDate.get()
     expItemPop.withdraw()
-    print(eIAmount, eIDate)
+    cursor = conn.cursor()
+    query = "select expense_id from Expense where expense_source = %s"
+    cursor.execute(query, [src])
+    expId = cursor.fetchall()[0][0]
+    print(eIAmount, eIDate, expId)
+    query = "insert into Expense_Line (expense_id, amount, date_gone) values (%s, %s, %s)"
+    try:
+        cursor.execute(query, [expId, eIAmount, eIDate])
+        messagebox.showinfo("Success", "Success")
+    except psycopg2.Error as e:
+        messagebox.showinfo("Error", e)
+    cursor.close()
     
 
     
