@@ -362,7 +362,8 @@ def eIButtonClick(src):
         messagebox.showinfo("Error", e)
     cursor.close()
     
-
+def debtScreenClick():
+    return
     
 #Login/MainPage
 #Labels
@@ -372,6 +373,7 @@ loginLabel = Label(loginScreen, text="Login")
 loginButton = Button(loginScreen, text="Login", command=lambda:login_submit())
 incomeScreenButton = Button(tk, text="Income", command=incomeScreenClick)
 expenseScreenButton = Button(tk, text="Expense", command=expenseScreenClick)
+debtScreenButton = Button(tk, text="Debt", command=debtScreenClick)
 
 
 #Inputs
@@ -385,6 +387,7 @@ loginLabel.grid(row=0, column=0)
 loginButton.grid(row=2, column=0)
 incomeScreenButton.grid(row=0, column=3)
 expenseScreenButton.grid(row=0, column=4)
+debtScreenButton.grid(row=0, column=5)
 
 #Inputs
 loginEntry.grid(row=1, column=0)
