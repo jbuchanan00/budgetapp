@@ -7,6 +7,7 @@ from login import *
 from datetime import date
 from tkinter import messagebox
 from expenseItem import eIButtonClick
+from incomeSource import submitInClick
 
 
 conn = psycopg2.connect(dbcredentials)
@@ -47,28 +48,7 @@ def login_submit():
     userFirstNameLabel.grid(row=0, column=0)
     userLastNameLabel.grid(row=0, column=1)
 
-def submitInClick():
-    global incomeSource
-    cursor = conn.cursor()
-    inSource = incomeSource.get()
-    sourceFreq = inSourceFreq.get()
-    query = f"select source from income where user_id = {id}"
-    cursor.execute(query)
-    inSourceCheck = cursor.fetchall()
-    for i in inSourceCheck:
-        print(i[0].strip())
-        if(i[0].strip() == inSource):
-            messagebox.showinfo("Error", "Income source has already been submitted")
-            return
-        else:
-            continue
-    query = 'insert into income (source, isfrequent, user_id) values (%s, %s, %s)'
-    try:
-        cursor.execute(query, (inSource, sourceFreq, id))
-        messagebox.showinfo("Success", "Success")
-    except psycopg2.Error as e:
-        messagebox.showinfo("Error", e)
-    cursor.close()
+
 
 def getInfoClick():
     global id
@@ -160,7 +140,7 @@ def incomeScreenClick():
     userLastNameLabel = Label(tk, text=userLastName)
     incomeSourceLabel = Label(tk, text="Income Source")
     #Income screen Buttons
-    submitIn = Button(tk, text="Submit", command=submitInClick)
+    submitIn = Button(tk, text="Submit", command=lambda: submitInClick(incomeSource, conn, inSourceFreq, id))
     incomeInfo = Button(tk, text="Income info", command=getInfoClick)
     #Income screen Entries 
     incomeSource = Entry(tk, width=30)
@@ -342,23 +322,6 @@ def expLineClick(event):
     expItemSubmit.grid(row=1, column=1, sticky=E)
 
     expItemPop.mainloop()
-
-"""def eIButtonClick(src, expAmount, expDate, expItemPop):
-    eIAmount = expAmount.get()
-    eIDate = expDate.get()
-    expItemPop.withdraw()
-    cursor = conn.cursor()
-    query = "select expense_id from Expense where expense_source = %s"
-    cursor.execute(query, [src])
-    expId = cursor.fetchall()[0][0]
-    print(eIAmount, eIDate, expId)
-    query = "insert into Expense_Line (expense_id, amount, date_gone) values (%s, %s, %s)"
-    try:
-        cursor.execute(query, [expId, eIAmount, eIDate])
-        messagebox.showinfo("Success", "Success")
-    except psycopg2.Error as e:
-        messagebox.showinfo("Error", e)
-    cursor.close()"""
     
 def debtScreenClick():
     return
