@@ -6,6 +6,7 @@ from tkinter import *
 from login import *
 from datetime import date
 from tkinter import messagebox
+from expenseItem import eIButtonClick
 
 
 conn = psycopg2.connect(dbcredentials)
@@ -308,7 +309,7 @@ def expenseEntryClick():
 def expenseInfoClick():
     global id
     cursor = conn.cursor()
-    query = f"select * from Expense left join Category on Category.category_id = Expense.category_id where user_id = {id}"
+    query = f"select * from Expense left join Category on Category.category_id = Expense.category_id where Expense.user_id = {id}"
     cursor.execute(query)
     info = cursor.fetchall()
     expRow = 8
@@ -332,7 +333,7 @@ def expLineClick(event):
     #Widgets
     expAmount = Entry(expItemPop, width=30)
     expDate = Entry(expItemPop, width=30)
-    expItemSubmit = Button(expItemPop, text="Submit", padx=5, pady=5, command=lambda: eIButtonClick(expenseName))
+    expItemSubmit = Button(expItemPop, text="Submit", padx=5, pady=5, command=lambda: eIButtonClick(expenseName, expAmount, expDate, expItemPop, conn))
     #Inserts
     expDate.insert(0, date.today())
     #Placements
@@ -342,10 +343,7 @@ def expLineClick(event):
 
     expItemPop.mainloop()
 
-def eIButtonClick(src):
-    global expAmount
-    global expDate
-    global expItemPop
+"""def eIButtonClick(src, expAmount, expDate, expItemPop):
     eIAmount = expAmount.get()
     eIDate = expDate.get()
     expItemPop.withdraw()
@@ -360,7 +358,7 @@ def eIButtonClick(src):
         messagebox.showinfo("Success", "Success")
     except psycopg2.Error as e:
         messagebox.showinfo("Error", e)
-    cursor.close()
+    cursor.close()"""
     
 def debtScreenClick():
     return
