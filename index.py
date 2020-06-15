@@ -8,6 +8,7 @@ from datetime import date
 from tkinter import messagebox
 from expenseItem import eIButtonClick
 from incomeSource import submitInClick
+from expenseSource import expenseEntryClick
 
 
 conn = psycopg2.connect(dbcredentials)
@@ -47,8 +48,6 @@ def login_submit():
     userLastNameLabel = Label(tk, text=userLastName)
     userFirstNameLabel.grid(row=0, column=0)
     userLastNameLabel.grid(row=0, column=1)
-
-
 
 def getInfoClick():
     global id
@@ -187,7 +186,7 @@ def expenseScreenClick():
     #Button
     incomeScreenButton = Button(tk, text="Income", command=incomeScreenClick)
     expenseScreenButton = Button(tk, text="Expense", command=expenseScreenClick)
-    expenseSrcButton = Button(tk, text="Submit", command=expenseEntryClick)
+    expenseSrcButton = Button(tk, text="Submit", command=lambda: expenseEntryClick(expenseSrc, clicked, catIdFind, exSourceFreq, id, conn))
     categoryEntryButton = Button(tk, text="Submit", command=categoryEntryClick)
     expenseInfoButton = Button(tk, text="Expense info", command=expenseInfoClick)
     #Entry
@@ -263,29 +262,6 @@ def categoryEntryClick():
     except psycopg2.Error as e:
         messagebox.showinfo("Error", e)
 
-def expenseEntryClick():
-    global expenseSrc
-    global clicked
-    global catIdFind
-    global exSourceFreq
-    global id
-    expEnt = expenseSrc.get()
-    catEnt = clicked.get()
-    freq = exSourceFreq.get()
-    cursor = conn.cursor()
-    catId = 0
-    for i in catIdFind:
-        print(i[1], catEnt)
-        if i[1].strip() == catEnt:
-            catId = i[0]
-    #UserId, Source, Freq, Category
-    query = "insert into Expense (user_id, expense_source, frequency, category_id) values (%s, %s, %s, %s)"
-    try:
-        cursor.execute(query, [id, expEnt, freq, catId])
-        messagebox.showinfo("Success", "Success")
-    except psycopg2.Error as e:
-        messagebox.showinfo("Error", e)
-
 def expenseInfoClick():
     global id
     cursor = conn.cursor()
@@ -297,7 +273,10 @@ def expenseInfoClick():
         print(i)
         expInfoButton = Button(tk, text=i[2].strip(), command=expLineClick)
         expInfoButton.grid(row=expRow, column=0)
-        expCatInfo = Label(tk, text=i[6].strip())
+        if i[6]:
+            expCatInfo = Label(tk, text=i[6].strip())
+        else:
+            expCatInfo = Label(tk, text="None Entered")
         expCatInfo.grid(row=expRow, column=1)
         expInfoButton.bind("<Button-1>", expLineClick)
         expRow += 1  
